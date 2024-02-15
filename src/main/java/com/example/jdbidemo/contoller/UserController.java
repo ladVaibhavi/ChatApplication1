@@ -5,13 +5,17 @@ import com.example.jdbidemo.domains.User;
 import com.example.jdbidemo.domains.UserDTO;
 import com.example.jdbidemo.persistant.UserMapper;
 import com.example.jdbidemo.service.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@EnableAutoConfiguration
+
 public class UserController {
 
     private final UserService userService;
@@ -38,13 +42,16 @@ public class UserController {
         return userDTO;
     }
 
-    @PostMapping
-     public User createUser(@RequestBody User user)
-     {
-         User newUser = userService.createUser(user);
-         return newUser;
 
-     }
+    @PostMapping(value="/register", produces = "application/json")
+//    @Operation(summary = "Get All Notifications Count")
+    public User registerUser(@RequestBody User user) throws Exception {
+        try {
+            return userService.createUser(user);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
     @PutMapping("/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
         User user = userService.updateUser(id, updatedUser);

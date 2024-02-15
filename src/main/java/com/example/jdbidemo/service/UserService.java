@@ -4,6 +4,7 @@ import com.example.jdbidemo.domains.User;
 import com.example.jdbidemo.domains.UserDTO;
 import com.example.jdbidemo.persistant.UserMapper;
 import com.example.jdbidemo.persistant.UserRepositoryImpl;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -21,8 +22,8 @@ public class UserService {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
     }
-    public String hash(String value)
-    {
+
+    public String hash(String value) {
         try {
             return DigestUtils.md5DigestAsHex(value.getBytes(StandardCharsets.UTF_8));
         } catch (Exception ex) {
@@ -44,14 +45,23 @@ public class UserService {
         return null;
     }
 
-    public User createUser(User user) {
+    void validateUser(User user) throws Exception
+    {
+        if (StringUtils.isEmpty(user.getEmail()) || StringUtils.isEmpty(user.getFirstname())) {
+            throw new Error("Name and Email are mandatory.");
+        }
+    }
+    public User createUser(User user) throws Exception {
+        validateUser(user);
         user.setId(hash(user.getEmail()+user.getFirstname()));
+        user.setPassword(hash(user.getPassword()));
         User user1 = userRepository.addNewUser(user);
 
         return user1;
     }
 
     public User updateUser(Long id, User updatedUser) {
+
         User user1 = userRepository.updateUser(id,updatedUser);
         return updatedUser;
     }
