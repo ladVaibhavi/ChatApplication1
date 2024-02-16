@@ -25,10 +25,10 @@ public class UserRepositoryImpl {
 
 
 
-    public User findById(String id) {
+    public User findByEmail(String email) {
         return jdbi.withHandle(handle ->
-                handle.createQuery("SELECT * FROM public.\"user\" WHERE id = :id")
-                        .bind("id", id)
+                handle.createQuery("SELECT * FROM public.\"user\" WHERE email = :email")
+                        .bind("email", email)
                         .mapToBean(User.class)
                         .findOnly()
         );

@@ -1,11 +1,13 @@
 package com.example.jdbidemo.service;
 
 import com.example.jdbidemo.domains.User;
-import com.example.jdbidemo.domains.UserDTO;
 import com.example.jdbidemo.persistant.UserMapper;
 import com.example.jdbidemo.persistant.UserRepositoryImpl;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -13,12 +15,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UsersService implements UserDetailsService {
     private final UserRepositoryImpl userRepository;
     private final UserMapper userMapper;
 
     @Autowired
-    public UserService(UserRepositoryImpl userRepository, UserMapper userMapper) {
+    public UsersService(UserRepositoryImpl userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
     }
@@ -37,12 +39,8 @@ public class UserService {
         return userRepository.getAllUsers();
     }
 
-    public UserDTO findById(String id) {
-        User user = userRepository.findById(id);
-        if (user != null) {
-            return userMapper.userToUserDTO(user);
-        }
-        return null;
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     void validateUser(User user) throws Exception
@@ -71,5 +69,8 @@ public class UserService {
     }
 
 
- 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return findByEmail(username);
+    }
 }
