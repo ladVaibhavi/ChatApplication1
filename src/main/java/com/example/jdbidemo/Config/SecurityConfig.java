@@ -25,19 +25,22 @@ public class SecurityConfig {
 
     @Autowired
     private JwtAuthenticationEntryPoint point;
+
     @Autowired
     private JwtAuthenticationFilter filter;
+
     @Autowired
     private UserDetailsService usersService;
-@Autowired
-private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeRequests().
-                requestMatchers("/test").authenticated().requestMatchers("/auth/login").permitAll()
+                requestMatchers("/test").authenticated().requestMatchers("/auth/login").permitAll().requestMatchers("/auth/register").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and().exceptionHandling(ex -> ex.authenticationEntryPoint(point))

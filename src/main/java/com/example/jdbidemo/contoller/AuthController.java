@@ -2,7 +2,10 @@ package com.example.jdbidemo.contoller;
 
 import com.example.jdbidemo.domains.JwtRequest;
 import com.example.jdbidemo.domains.JwtResponse;
+import com.example.jdbidemo.domains.User;
+import com.example.jdbidemo.persistant.UserRepositoryImpl;
 import com.example.jdbidemo.security.JwtHelper;
+import com.example.jdbidemo.service.UsersService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,12 @@ public class AuthController {
 
     @Autowired
     private JwtHelper helper;
+
+    @Autowired
+    private UserRepositoryImpl userRepository;
+
+    @Autowired
+    private UsersService userService;
 
     private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
@@ -63,6 +72,15 @@ public class AuthController {
     @ExceptionHandler(BadCredentialsException.class)
     public String exceptionHandler() {
         return "Credentials Invalid !!";
+    }
+
+    @PostMapping(value="/register", produces = "application/json")
+    public User registerUser(@RequestBody User user) throws Exception {
+        try {
+            return userService.createUser(user);
+        } catch (Exception ex) {
+            throw ex;
+        }
     }
 
 }

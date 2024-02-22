@@ -43,7 +43,7 @@ public class UsersService implements UserDetailsService {
         return userRepository.findByEmail(email);
     }
 
-    void validateUser(User user) throws Exception
+    public void validateUser(User user) throws Exception
     {
         if (StringUtils.isEmpty(user.getEmail()) || StringUtils.isEmpty(user.getFirstname())) {
             throw new Error("Name and Email are mandatory.");

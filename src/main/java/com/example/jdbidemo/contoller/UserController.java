@@ -41,14 +41,7 @@ public class UserController {
         return user;
     }
 
-    @PostMapping(value="/register", produces = "application/json")
-    public User registerUser(@RequestBody User user) throws Exception {
-        try {
-            return userService.createUser(user);
-        } catch (Exception ex) {
-            throw ex;
-        }
-    }
+
     @PutMapping("/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
         User user = userService.updateUser(id, updatedUser);
