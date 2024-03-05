@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -18,6 +19,8 @@ import java.util.List;
 public class UsersService implements UserDetailsService {
     private final UserRepositoryImpl userRepository;
     private final UserMapper userMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public UsersService(UserRepositoryImpl userRepository, UserMapper userMapper) {
@@ -52,7 +55,7 @@ public class UsersService implements UserDetailsService {
     public User createUser(User user) throws Exception {
         validateUser(user);
         user.setId(hash(user.getEmail()+user.getFirstname()));
-        user.setPassword(hash(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User user1 = userRepository.addNewUser(user);
 
         return user1;

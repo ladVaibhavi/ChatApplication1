@@ -34,13 +34,12 @@ public class SecurityConfig {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeRequests().
-                requestMatchers("/test").authenticated().requestMatchers("/auth/login").permitAll().requestMatchers("/auth/register").permitAll()
+                requestMatchers("/auth/login").authenticated().requestMatchers("/auth/login").permitAll().requestMatchers("/auth/register").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and().exceptionHandling(ex -> ex.authenticationEntryPoint(point))
